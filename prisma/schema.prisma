@@ -1,0 +1,186 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+enum Role {
+  STUDENT
+  ADMIN
+}
+
+model User {
+  id            String    @id @default(cuid())
+  name          String?
+  email         String?   @unique
+  emailVerified DateTime?
+  image         String?
+  passwordHash  String?
+  role          Role      @default(STUDENT)
+
+  // Auth.js adapter
+  accounts Account[]
+  sessions Session[]
+
+  // Content relations
+  announcements Announcement[] @relation("AnnouncementAuthor")
+  posts         Post[]
+  submissions   Submission[]
+
+  // Back-relations to satisfy “missing opposite relation”
+  createdAssignments Assignment[]       @relation("UserCreatedAssignments")
+  createdThreads     DiscussionThread[] @relation("UserCreatedThreads")
+
+  createdAt        DateTime           @default(now())
+  updatedAt        DateTime           @updatedAt
+  Confession       Confession[]
+  ConfessionLike   ConfessionLike[]
+  ConfessionReport ConfessionReport[]
+}
+
+model Account {
+  id                String  @id @default(cuid())
+  userId            String
+  type              String
+  provider          String
+  providerAccountId String
+  refresh_token     String?
+  access_token      String?
+  expires_at        Int?
+  token_type        String?
+  scope             String?
+  id_token          String?
+  session_state     String?
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([provider, providerAccountId])
+}
+
+model Session {
+  id           String   @id @default(cuid())
+  sessionToken String   @unique
+  userId       String
+  expires      DateTime
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+model VerificationToken {
+  identifier String
+  token      String   @unique
+  expires    DateTime
+
+  @@unique([identifier, token])
+}
+
+model Announcement {
+  id        String   @id @default(cuid())
+  title     String
+  content   String
+  authorId  String
+  createdAt DateTime @default(now())
+
+  author User @relation("AnnouncementAuthor", fields: [authorId], references: [id])
+}
+
+model Assignment {
+  id          String   @id @default(cuid())
+  title       String
+  description String
+  dueAt       DateTime
+  createdById String
+  createdAt   DateTime @default(now())
+
+  createdBy   User         @relation("UserCreatedAssignments", fields: [createdById], references: [id])
+  submissions Submission[]
+}
+
+model Submission {
+  id           String   @id @default(cuid())
+  assignmentId String
+  studentId    String
+  content      String
+  createdAt    DateTime @default(now())
+
+  assignment Assignment @relation(fields: [assignmentId], references: [id])
+  student    User       @relation(fields: [studentId], references: [id])
+}
+
+model DiscussionThread {
+  id          String   @id @default(cuid())
+  title       String
+  createdById String
+  createdAt   DateTime @default(now())
+
+  createdBy User   @relation("UserCreatedThreads", fields: [createdById], references: [id])
+  posts     Post[]
+}
+
+model Post {
+  id        String   @id @default(cuid())
+  threadId  String
+  authorId  String
+  content   String
+  createdAt DateTime @default(now())
+
+  thread DiscussionThread @relation(fields: [threadId], references: [id])
+  author User             @relation(fields: [authorId], references: [id])
+}
+
+// prisma/schema.prisma (add at the bottom)
+model EnrollmentToken {
+  id        String    @id @default(cuid())
+  email     String
+  tokenHash String
+  expires   DateTime
+  usedAt    DateTime?
+  createdAt DateTime  @default(now())
+
+  @@index([email])
+}
+
+enum ConfessionStatus {
+  PENDING
+  APPROVED
+  REJECTED
+}
+
+model Confession {
+  id        String           @id @default(cuid())
+  body      String
+  authorId  String
+  createdAt DateTime         @default(now())
+  status    ConfessionStatus @default(PENDING)
+
+  author  User               @relation(fields: [authorId], references: [id])
+  likes   ConfessionLike[]
+  reports ConfessionReport[]
+}
+
+model ConfessionLike {
+  confessionId String
+  userId       String
+  createdAt    DateTime @default(now())
+
+  confession Confession @relation(fields: [confessionId], references: [id], onDelete: Cascade)
+  user       User       @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@id([confessionId, userId]) // one like per user per confession
+}
+
+model ConfessionReport {
+  id           String   @id @default(cuid())
+  confessionId String
+  userId       String
+  reason       String
+  createdAt    DateTime @default(now())
+
+  confession Confession @relation(fields: [confessionId], references: [id], onDelete: Cascade)
+  user       User       @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([confessionId, userId]) // one report per user per confession
+}
