@@ -12,6 +12,54 @@ enum Role {
   ADMIN
 }
 
+enum Permission {
+  MANAGE_ANNOUNCEMENTS
+  MODERATE_CONFESSIONS
+  MANAGE_DISCUSSIONS
+  MANAGE_ENROLLMENT
+  MANAGE_USERS
+  VIEW_REPORTS
+  SITE_ADMIN
+  MANAGE_FINANCES
+}
+
+model RbacRole {
+  id              String               @id @default(cuid())
+  name            String               @unique
+  description     String?
+  rolePermissions RbacRolePermission[]
+  userRoles       UserRbacRole[]
+  createdAt       DateTime             @default(now())
+}
+
+model RbacRolePermission {
+  roleId     String
+  permission Permission
+
+  role RbacRole @relation(fields: [roleId], references: [id], onDelete: Cascade)
+
+  @@id([roleId, permission])
+}
+
+model UserRbacRole {
+  userId String
+  roleId String
+
+  user User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  role RbacRole @relation(fields: [roleId], references: [id], onDelete: Cascade)
+
+  @@id([userId, roleId])
+}
+
+model UserPermission {
+  userId     String
+  permission Permission
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@id([userId, permission])
+}
+
 model User {
   id            String    @id @default(cuid())
   name          String?
@@ -20,6 +68,7 @@ model User {
   image         String?
   passwordHash  String?
   role          Role      @default(STUDENT)
+  bio           String?   @default("Nothing here...")
 
   // Auth.js adapter
   accounts Account[]
@@ -34,11 +83,14 @@ model User {
   createdAssignments Assignment[]       @relation("UserCreatedAssignments")
   createdThreads     DiscussionThread[] @relation("UserCreatedThreads")
 
-  createdAt        DateTime           @default(now())
-  updatedAt        DateTime           @updatedAt
-  Confession       Confession[]
-  ConfessionLike   ConfessionLike[]
-  ConfessionReport ConfessionReport[]
+  createdAt            DateTime               @default(now())
+  updatedAt            DateTime               @updatedAt
+  Confession           Confession[]
+  ConfessionLike       ConfessionLike[]
+  ConfessionReport     ConfessionReport[]
+  UserRbacRole         UserRbacRole[]
+  UserPermission       UserPermission[]
+  ClassFundTransaction ClassFundTransaction[]
 }
 
 model Account {
@@ -183,4 +235,16 @@ model ConfessionReport {
   user       User       @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   @@unique([confessionId, userId]) // one report per user per confession
+}
+
+model ClassFundTransaction {
+  id          String   @id @default(cuid())
+  amountCents Int // positive = deposit, negative = expense
+  memo        String?
+  createdAt   DateTime @default(now())
+  createdById String
+
+  createdBy User @relation(fields: [createdById], references: [id], onDelete: Cascade)
+
+  @@index([createdAt])
 }

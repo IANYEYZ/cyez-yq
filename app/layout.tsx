@@ -18,10 +18,9 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
                 <Link href="/" className="font-semibold tracking-tight">CYEZ-YQ</Link>
                 <Link href="/dashboard" className="text-sm hover:underline">Dashboard</Link>
                 <Link href="/announcements" className="text-sm hover:underline">Announcements</Link>
-                <Link href="/assignments" className="text-sm hover:underline">Assignments</Link>
-                <Link href="/resources" className="text-sm hover:underline">Resources</Link>
                 <Link href="/discussions" className="text-sm hover:underline">Discussions</Link>
                 <Link href="/confessions" className="text-sm hover:underline">Confessions</Link>
+                <Link href="/fund" className="text-sm hover:underline">Class Fund</Link>
               </div>
               <NavAuthButtons />
             </div>

@@ -20,12 +20,12 @@ export function NavAuthButtons() {
   }
 
   return loggedIn ? (
-    <button
-      onClick={() => signOut({ callbackUrl: "/" })}
-      className="rounded border px-3 py-1.5 text-sm hover:bg-gray-50"
-    >
-      Sign out
-    </button>
+    <div className="flex items-center gap-2">
+  <a href="/u/me" className="rounded border px-3 py-1.5 text-sm hover:bg-gray-50">Profile</a>
+      <button onClick={() => signOut({ callbackUrl: "/" })} className="rounded border px-3 py-1.5 text-sm hover:bg-gray-50">
+        Sign out
+      </button>
+    </div>
   ) : (
     <div className="flex items-center gap-2">
       <Link
