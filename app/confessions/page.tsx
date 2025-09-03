@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { prisma } from "@/lib/prisma";
 import { auth } from "@/auth";
+import _LikeButton from "./_LikeButton";
 
 export const dynamic = "force-dynamic";
 
@@ -52,7 +53,5 @@ export default async function ConfessionsPage() {
 }
 
 function LikeButton(props: { confessionId: string; initialLiked: boolean; initialCount: number }) {
-  // wrapped client component
-  // @ts-expect-error Server Component wrapper
   return <_LikeButton {...props} />
 }

@@ -8,7 +8,8 @@ import { auth } from "@/auth";
 
 export const dynamic = "force-dynamic";
 
-export default async function UserPublicPage({ params }: { params: { id: string } }) {
+export default async function UserPublicPage(context: any) {
+  const params = (await context).params
   const session = await auth();
   const meId = (session?.user as any)?.id;
 
@@ -16,6 +17,7 @@ export default async function UserPublicPage({ params }: { params: { id: string 
     where: { id: params.id },
     select: { name: true, bio: true, createdAt: true, id: true },
   });
+  console.log(user)
   if (!user) return notFound();
 
   return (

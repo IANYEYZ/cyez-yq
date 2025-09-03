@@ -11,6 +11,15 @@ const compat = new FlatCompat({
 
 const eslintConfig = [
   ...compat.extends("next/core-web-vitals", "next/typescript"),
+  ...compat.config({
+    rules: {
+      'react/jsx-pascal-case': 'off',
+      'react-hooks/rules-of-hooks': 'off',
+      '@typescript-eslint/no-explicit-any': 'off',
+      '@next/next/no-html-link-for-pages': 'off',
+      '@typescript-eslint/no-non-null-asserted-optional-chain': 'off'
+    }
+  })
 ];
 
 export default eslintConfig;

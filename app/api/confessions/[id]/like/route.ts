@@ -2,8 +2,9 @@ import { NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 import { requireUser } from "@/lib/auth-helpers";
 
-export async function POST(_req: Request, { params }: { params: { id: string } }) {
+export async function POST(_req: Request, context: any) {
   try {
+    const params = (await context).params
     const session = await requireUser();
     const userId = (session.user as any).id;
     const confessionId = params.id;

@@ -5,8 +5,9 @@ import { z } from "zod";
 
 const schema = z.object({ status: z.enum(["APPROVED", "REJECTED"]) });
 
-export async function POST(req: Request, { params }: { params: { id: string } }) {
+export async function POST(req: Request, context: any) {
   try {
+    const params = (await context).params
     await requireAdmin();
     const form = await req.formData();
     const parsed = schema.safeParse({ status: String(form.get("status") ?? "") });

@@ -10,7 +10,8 @@ const editSchema = z.object({
 });
 
 // PATCH /api/discussions/posts/:id  -> edit content
-export async function PATCH(req: Request, { params }: { params: { id: string } }) {
+export async function PATCH(req: Request, context: any) {
+  const params = (await context).params
   const session = await requireUser();
   const userId = (session.user as any).id as string;
 
@@ -37,7 +38,8 @@ export async function PATCH(req: Request, { params }: { params: { id: string } }
 }
 
 // DELETE /api/discussions/posts/:id
-export async function DELETE(_req: Request, { params }: { params: { id: string } }) {
+export async function DELETE(_req: Request, context: any) {
+  const params = (await context).params
   const session = await requireUser();
   const userId = (session.user as any).id as string;
 

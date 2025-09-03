@@ -7,7 +7,8 @@ import { z } from "zod";
 
 const editSchema = z.object({ title: z.string().trim().min(3).max(200) });
 
-export async function PATCH(req: Request, { params }: { params: { id: string } }) {
+export async function PATCH(req: Request, context: any) {
+  const params = (await context).params
   const session = await requireUser();
   const userId = (session.user as any).id as string;
 
@@ -34,7 +35,8 @@ export async function PATCH(req: Request, { params }: { params: { id: string } }
   return NextResponse.json({ ok: true });
 }
 
-export async function DELETE(_req: Request, { params }: { params: { id: string } }) {
+export async function DELETE(_req: Request, context: any) {
+  const params = (await context).params
   const session = await requireUser();
   const userId = (session.user as any).id as string;
 
