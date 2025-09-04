@@ -55,22 +55,22 @@ export default function ProfileForm({ defaultEmail, defaultRole }: { defaultEmai
   return (
     <form onSubmit={submit} className="space-y-4">
       <div>
-        <label className="block text-sm font-medium">Email (read-only)</label>
+        <label className="block text-sm font-medium">邮箱（只读）</label>
         <input value={defaultEmail} readOnly className="mt-1 block w-full rounded border-gray-300 bg-gray-100" />
       </div>
 
       <div>
-        <label className="block text-sm font-medium">Role</label>
+        <label className="block text-sm font-medium">角色</label>
         <input value={defaultRole} readOnly className="mt-1 block w-full rounded border-gray-300 bg-gray-100" />
       </div>
 
       <div>
-        <label className="block text-sm font-medium">Joined</label>
+        <label className="block text-sm font-medium">加入时间</label>
         <input value={joined} readOnly className="mt-1 block w-full rounded border-gray-300 bg-gray-100" />
       </div>
 
       <div>
-        <label className="block text-sm font-medium">Display name</label>
+        <label className="block text-sm font-medium">显示名称</label>
         <input
           value={name}
           onChange={e=>setName(e.target.value)}
@@ -80,21 +80,21 @@ export default function ProfileForm({ defaultEmail, defaultRole }: { defaultEmai
       </div>
 
       <div>
-        <label className="block text-sm font-medium">Bio (Markdown supported)</label>
+        <label className="block text-sm font-medium">个人简介（支持 Markdown）</label>
         <textarea
           value={bio}
           onChange={e=>setBio(e.target.value)}
           rows={6}
           className="mt-1 block w-full rounded border-gray-300"
-          placeholder="Write a short description. You can use **bold**, _italics_, lists, and `code`."
+          placeholder="写一句自我介绍。你可以使用 **加粗**、_斜体_、列表和 `代码`。"
         />
       </div>
 
       {error && <p className="text-sm text-red-600">{error}</p>}
-      {ok && <p className="text-sm text-green-600">Saved!</p>}
+      {ok && <p className="text-sm text-green-600">已保存！</p>}
 
       <button disabled={saving} className="rounded bg-black px-4 py-2 text-white disabled:opacity-50">
-        {saving ? "Saving..." : "Save profile"}
+        {saving ? "保存中..." : "保存资料"}
       </button>
     </form>
   );

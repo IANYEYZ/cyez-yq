@@ -14,9 +14,9 @@ export default async function AnnouncementsPage() {
   return (
     <div className="space-y-6">
       <div className="flex items-center justify-between">
-        <h1 className="text-2xl font-semibold">Announcements</h1>
+        <h1 className="text-2xl font-semibold">公告</h1>
         <Link href="/announcements/new" className="rounded bg-black px-3 py-1.5 text-sm text-white">
-          New
+          新建
         </Link>
       </div>
 
@@ -26,7 +26,7 @@ export default async function AnnouncementsPage() {
             <h2 className="text-lg font-medium">{a.title}</h2>
             <p className="mt-2 text-sm text-gray-700 whitespace-pre-wrap">{a.content}</p>
             <p className="mt-3 text-xs text-gray-500">
-              by {a.author?.name ?? a.author?.email} • {a.createdAt.toLocaleString()}
+              由 {a.author?.name ?? a.author?.email} · {a.createdAt.toLocaleString()}
             </p>
           </li>
         ))}

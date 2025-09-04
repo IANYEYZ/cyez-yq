@@ -27,25 +27,25 @@ export default async function Dashboard() {
 
   return (
     <div className="space-y-6">
-      <h1 className="text-2xl font-semibold">Dashboard</h1>
+      <h1 className="text-2xl font-semibold">仪表盘</h1>
 
       <div className="grid gap-4 md:grid-cols-3">
         <LuckCard luck={luck} />
 
         <div className="rounded border p-4">
           <div className="mb-2 flex items-center justify-between">
-            <h2 className="font-medium">Announcements</h2>
-            <Link href="/announcements" className="text-sm underline">View all</Link>
+            <h2 className="font-medium">公告</h2>
+            <Link href="/announcements" className="text-sm underline">查看全部</Link>
           </div>
           {announcements.length === 0 ? (
-            <p className="text-sm text-gray-600">No announcements yet.</p>
+            <p className="text-sm text-gray-600">暂无公告。</p>
           ) : (
             <ul className="space-y-3">
               {announcements.map((a) => (
                 <li key={a.id}>
                   <div className="font-medium leading-snug">{a.title}</div>
                   <div className="text-xs text-gray-600">
-                    by {a.author?.name ?? a.author?.email ?? "Unknown"} • {formatDate(a.createdAt)}
+                    由 {a.author?.name ?? a.author?.email ?? "未知"} · {formatDate(a.createdAt)}
                   </div>
                 </li>
               ))}
@@ -55,11 +55,11 @@ export default async function Dashboard() {
 
         <div className="rounded border p-4">
           <div className="mb-2 flex items-center justify-between">
-            <h2 className="font-medium">Assignments</h2>
-            <Link href="/assignments" className="text-sm underline">View all</Link>
+            <h2 className="font-medium">作业</h2>
+            <Link href="/assignments" className="text-sm underline">查看全部</Link>
           </div>
           {assignments.length === 0 ? (
-            <p className="text-sm text-gray-600">No upcoming assignments.</p>
+            <p className="text-sm text-gray-600">暂无即将到期的作业。</p>
           ) : (
             <ul className="space-y-3">
               {assignments.map((as) => (
@@ -77,7 +77,7 @@ export default async function Dashboard() {
         </div>
       </div>
 
-      <p className="text-sm text-gray-600">Signed in as {session?.user?.email}</p>
+      <p className="text-sm text-gray-600">已登录：{session?.user?.email}</p>
     </div>
   );
 }
@@ -85,19 +85,19 @@ export default async function Dashboard() {
 function LuckCard({ luck }: { luck: ReturnType<typeof luckFor> }) {
   return (
     <div className="rounded border p-4">
-      <h2 className="mb-2 font-medium">Today&apos;s Luck {luck.emoji}</h2>
+      <h2 className="mb-2 font-medium">今日运势 {luck.emoji}</h2>
       <div className="text-3xl font-bold">{luck.score}</div>
       <p className="text-sm text-gray-600">
-        {luck.tier} • {luck.day}
+        {luck.tier} · {luck.day}
       </p>
       <p className="mt-3 text-sm">
-        Lucky number: <span className="font-medium">{luck.luckyNumber}</span>
+        幸运数字：<span className="font-medium">{luck.luckyNumber}</span>
       </p>
       <p className="text-sm">
-        Lucky color: <span className="font-medium">{luck.luckyColor}</span>
+        幸运颜色：<span className="font-medium">{luck.luckyColor}</span>
       </p>
       <p className="mt-3 text-sm text-gray-700">{luck.blurb}</p>
-      <p className="mt-3 text-xs text-gray-500">seed: {luck.seed}</p>
+      <p className="mt-3 text-xs text-gray-500">种子：{luck.seed}</p>
     </div>
   );
 }

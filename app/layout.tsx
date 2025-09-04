@@ -9,18 +9,18 @@ export const metadata = {
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
-    <html lang="en" className="h-full">
+    <html lang="zh-cn" className="h-full">
       <body className="min-h-screen bg-white text-gray-900">
         <header className="border-b">
           <nav className="mx-auto max-w-6xl px-4">
             <div className="flex h-16 items-center justify-between">
               <div className="flex items-center gap-6">
                 <Link href="/" className="font-semibold tracking-tight">CYEZ-YQ</Link>
-                <Link href="/dashboard" className="text-sm hover:underline">Dashboard</Link>
-                <Link href="/announcements" className="text-sm hover:underline">Announcements</Link>
-                <Link href="/discussions" className="text-sm hover:underline">Discussions</Link>
-                <Link href="/confessions" className="text-sm hover:underline">Confessions</Link>
-                <Link href="/fund" className="text-sm hover:underline">Class Fund</Link>
+                <Link href="/dashboard" className="text-sm hover:underline">仪表盘</Link>
+                <Link href="/announcements" className="text-sm hover:underline">公告</Link>
+                <Link href="/discussions" className="text-sm hover:underline">讨论区</Link>
+                <Link href="/confessions" className="text-sm hover:underline">表白墙</Link>
+                <Link href="/fund" className="text-sm hover:underline">班费</Link>
               </div>
               <NavAuthButtons />
             </div>

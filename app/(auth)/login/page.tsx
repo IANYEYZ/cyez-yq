@@ -23,18 +23,18 @@ export default function LoginPage() {
 
   return (
     <div className="mx-auto max-w-sm">
-      <h1 className="mb-6 text-xl font-semibold">Sign in</h1>
+      <h1 className="mb-6 text-xl font-semibold">登录</h1>
       <form onSubmit={onSubmit} className="space-y-4">
         <div>
-          <label className="block text-sm font-medium">Email</label>
+          <label className="block text-sm font-medium">邮箱</label>
           <input name="email" type="email" required className="mt-1 block w-full rounded border-gray-300" />
         </div>
         <div>
-          <label className="block text-sm font-medium">Password</label>
+          <label className="block text-sm font-medium">密码</label>
           <input name="password" type="password" required className="mt-1 block w-full rounded border-gray-300" />
         </div>
         {error ? <p className="text-sm text-red-600">{error}</p> : null}
-        <button type="submit" className="w-full rounded bg-black px-4 py-2 text-white">Sign in</button>
+        <button type="submit" className="w-full rounded bg-black px-4 py-2 text-white">登录</button>
       </form>
     </div>
   );

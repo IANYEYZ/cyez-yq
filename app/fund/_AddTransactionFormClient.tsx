@@ -30,32 +30,32 @@ export default function _AddTransactionFormClient() {
 
   return (
     <div className="rounded border p-4">
-      <h2 className="mb-2 font-medium">Add Transaction</h2>
+      <h2 className="mb-2 font-medium">添加收支记录</h2>
       <form onSubmit={submit} className="grid gap-3 md:grid-cols-3">
         <div className="md:col-span-1">
-          <label className="block text-sm font-medium">Amount</label>
+          <label className="block text-sm font-medium">金额</label>
           <input
             value={amount}
             onChange={(e)=>setAmount(e.target.value)}
-            placeholder="e.g. 12.34 or -5"
+            placeholder="如 12.34 或 -5"
             className="mt-1 block w-full rounded border-gray-300"
             required
           />
-          <p className="mt-1 text-xs text-gray-500">Use negative for expenses (e.g. -25.00)</p>
+          <p className="mt-1 text-xs text-gray-500">支出请用负数（如 -25.00）</p>
         </div>
         <div className="md:col-span-2">
-          <label className="block text-sm font-medium">Memo (optional)</label>
+          <label className="block text-sm font-medium">备注（可选）</label>
           <input
             value={memo}
             onChange={(e)=>setMemo(e.target.value)}
-            placeholder="Snacks for study group"
+            placeholder="如学习小组零食"
             className="mt-1 block w-full rounded border-gray-300"
           />
         </div>
         {err && <p className="md:col-span-3 text-sm text-red-600">{err}</p>}
         <div className="md:col-span-3">
           <button disabled={busy} className="rounded bg-black px-4 py-2 text-white disabled:opacity-50">
-            {busy ? "Adding..." : "Add"}
+            {busy ? "添加中..." : "添加"}
           </button>
         </div>
       </form>

@@ -25,12 +25,12 @@ export default async function ConfessionsPage() {
   return (
     <div className="space-y-6">
       <div className="flex items-center justify-between">
-        <h1 className="text-2xl font-semibold">Confession Wall</h1>
-        <Link href="/confessions/new" className="rounded bg-black px-3 py-1.5 text-sm text-white">New confession</Link>
+        <h1 className="text-2xl font-semibold">表白墙</h1>
+        <Link href="/confessions/new" className="rounded bg-black px-3 py-1.5 text-sm text-white">发布表白</Link>
       </div>
 
       {confessions.length === 0 ? (
-        <p className="text-sm text-gray-600">No confessions yet.</p>
+        <p className="text-sm text-gray-600">暂无表白。</p>
       ) : (
         <ul className="space-y-4">
           {confessions.map(c => (

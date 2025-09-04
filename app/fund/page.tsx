@@ -45,23 +45,23 @@ export default async function FundPage() {
   return (
     <div className="space-y-6">
       <div className="flex items-center justify-between">
-        <h1 className="text-2xl font-semibold">Class Fund</h1>
-        <Link href="/dashboard" className="text-sm underline">Back to Dashboard</Link>
+        <h1 className="text-2xl font-semibold">班费</h1>
+        <Link href="/dashboard" className="text-sm underline">返回仪表盘</Link>
       </div>
 
       <div className="grid gap-4 md:grid-cols-3">
         <div className="rounded border p-4">
-          <h2 className="mb-2 font-medium">Current Balance</h2>
+          <h2 className="mb-2 font-medium">当前余额</h2>
           <div className="text-3xl font-bold">{formatMoney(balance)}</div>
           <p className={`mt-1 text-sm ${balance < 0 ? "text-red-600" : "text-gray-600"}`}>
-            {balance < 0 ? "⚠️ Negative balance" : "Up-to-date total"}
+            {balance < 0 ? "⚠️ 余额为负" : "已更新总额"}
           </p>
         </div>
 
         <div className="md:col-span-2 rounded border p-4">
-          <h2 className="mb-2 font-medium">Balance Over Time</h2>
+          <h2 className="mb-2 font-medium">余额变化</h2>
           {labels.length === 0 ? (
-            <p className="text-sm text-gray-600">No transactions yet.</p>
+            <p className="text-sm text-gray-600">暂无收支记录。</p>
           ) : (
             <FundChart labels={labels} data={data} />
           )}
@@ -71,9 +71,9 @@ export default async function FundPage() {
       {canManage && <AddTransactionForm />}
 
       <div className="rounded border">
-        <div className="border-b p-3 font-medium">Recent Transactions</div>
+        <div className="border-b p-3 font-medium">最近收支</div>
         {txs.length === 0 ? (
-          <p className="p-3 text-sm text-gray-600">No transactions yet.</p>
+          <p className="p-3 text-sm text-gray-600">暂无收支记录。</p>
         ) : (
           <ul className="divide-y">
             {[...txs].reverse().slice(0, 20).map(t => (
@@ -83,7 +83,7 @@ export default async function FundPage() {
                   {t.memo && <div className="text-sm text-gray-600 truncate">{t.memo}</div>}
                 </div>
                 <div className="shrink-0 text-xs text-gray-600">
-                  {new Intl.DateTimeFormat("en-US",{ dateStyle:"medium", timeStyle:"short" }).format(t.createdAt)}
+                  {new Intl.DateTimeFormat("zh-CN",{ dateStyle:"medium", timeStyle:"short" }).format(t.createdAt)}
                 </div>
               </li>
             ))}
