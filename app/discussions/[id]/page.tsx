@@ -41,7 +41,7 @@ export default async function ThreadPage(context: any) {
           <div>
             <h1 className="text-2xl font-semibold">{thread.title}</h1>
             <p className="mt-2 text-sm text-gray-600">
-              Started by {thread.createdBy?.name ?? thread.createdBy?.email} • {thread.createdAt.toLocaleString()}
+              发布自 {thread.createdBy?.name ?? thread.createdBy?.email} • {thread.createdAt.toLocaleString()}
             </p>
           </div>
           {/* Optional: thread title edit/delete for owner/mods */}

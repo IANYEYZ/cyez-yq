@@ -41,20 +41,20 @@ export default function _ThreadActionsClient({
       <div className="flex gap-2">
         <input className="rounded border px-2 py-1 text-sm" value={title} onChange={(e)=>setTitle(e.target.value)} />
         <button onClick={save} disabled={busy} className="rounded bg-black px-2 py-1 text-xs text-white disabled:opacity-50">
-          {busy ? "Saving..." : "Save"}
+          {busy ? "保存中..." : "保存"}
         </button>
         <button onClick={() => { setTitle(initialTitle); setEditing(false); }} className="rounded border px-2 py-1 text-xs">
-          Cancel
+          取消
         </button>
-        <button onClick={delThread} className="rounded border px-2 py-1 text-xs">Delete</button>
+        <button onClick={delThread} className="rounded border px-2 py-1 text-xs">删除</button>
       </div>
     );
   }
 
   return (
     <div className="space-x-2">
-      <button onClick={() => setEditing(true)} className="rounded border px-2 py-1 text-xs">Edit</button>
-      <button onClick={delThread} className="rounded border px-2 py-1 text-xs">Delete</button>
+      <button onClick={() => setEditing(true)} className="rounded border px-2 py-1 text-xs">编辑</button>
+      <button onClick={delThread} className="rounded border px-2 py-1 text-xs">删除</button>
     </div>
   );
 }

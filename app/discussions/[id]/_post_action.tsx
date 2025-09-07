@@ -52,10 +52,10 @@ export default function PostActions({
         {err && <p className="mt-1 text-xs text-red-600">{err}</p>}
         <div className="mt-2 flex gap-2">
           <button onClick={save} disabled={busy} className="rounded bg-black px-2 py-1 text-xs text-white disabled:opacity-50">
-            {busy ? "Saving..." : "Save"}
+            {busy ? "保存中..." : "保存"}
           </button>
           <button onClick={() => { setEditing(false); setContent(initialContent); }} className="rounded border px-2 py-1 text-xs">
-            Cancel
+            取消
           </button>
         </div>
       </div>
