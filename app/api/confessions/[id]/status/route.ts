@@ -2,13 +2,14 @@ import { NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 import { requireAdmin } from "@/lib/auth-helpers";
 import { z } from "zod";
+import { requirePermission } from "@/lib/permissions";
 
 const schema = z.object({ status: z.enum(["APPROVED", "REJECTED"]) });
 
 export async function POST(req: Request, context: any) {
   try {
     const params = (await context).params
-    await requireAdmin();
+    await requirePermission("MODERATE_CONFESSIONS")
     const form = await req.formData();
     const parsed = schema.safeParse({ status: String(form.get("status") ?? "") });
     if (!parsed.success) return NextResponse.json({ error: "Invalid" }, { status: 400 });

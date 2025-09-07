@@ -2,12 +2,21 @@ import Link from "next/link";
 import { prisma } from "@/lib/prisma";
 import { auth } from "@/auth";
 import _LikeButton from "./_LikeButton";
+import DeleteButtonClient from "./DeleteButton";             // ← NEW
+import { getUserPermissions } from "@/lib/permissions";              // ← NEW
+import { Permission } from "@prisma/client";                         // ← NEW
 
 export const dynamic = "force-dynamic";
 
 export default async function ConfessionsPage() {
   const session = await auth();
   const userId = (session?.user as any)?.id as string;
+
+  // can this user moderate?
+  const canModerate = await (async () => {
+    const perms = await getUserPermissions(userId);
+    return perms.has(Permission.MODERATE_CONFESSIONS);
+  })();
 
   const confessions = await prisma.confession.findMany({
     where: { status: "APPROVED" },
@@ -16,8 +25,9 @@ export default async function ConfessionsPage() {
       id: true,
       body: true,
       createdAt: true,
+      authorId: true,                                             // ← add
       _count: { select: { likes: true } },
-      likes: { where: { userId }, select: { userId: true } }, // to know if I liked
+      likes: { where: { userId }, select: { userId: true } },     // needs userId; route is authed via middleware
     },
     take: 50,
   });
@@ -33,19 +43,25 @@ export default async function ConfessionsPage() {
         <p className="text-sm text-gray-600">暂无表白。</p>
       ) : (
         <ul className="space-y-4">
-          {confessions.map(c => (
-            <li key={c.id} className="rounded border p-4">
-              <p className="whitespace-pre-wrap">{c.body}</p>
-              <div className="mt-3 flex items-center justify-between text-xs text-gray-500">
-                <span>{c.createdAt.toLocaleString()}</span>
-                <LikeButton
-                  confessionId={c.id}
-                  initialLiked={c.likes.length > 0}
-                  initialCount={c._count.likes}
-                />
-              </div>
-            </li>
-          ))}
+          {confessions.map(c => {
+            const canDelete = canModerate || c.authorId === userId; // ← allow author or moderator
+            return (
+              <li key={c.id} className="rounded border p-4">
+                <p className="whitespace-pre-wrap">{c.body}</p>
+                <div className="mt-3 flex items-center justify-between text-xs text-gray-500">
+                  <span>{c.createdAt.toLocaleString()}</span>
+                  <div className="flex items-center gap-2">
+                    <LikeButton
+                      confessionId={c.id}
+                      initialLiked={c.likes.length > 0}
+                      initialCount={c._count.likes}
+                    />
+                    {canDelete && <DeleteButtonClient id={c.id} />}   {/* ← show Delete */}
+                  </div>
+                </div>
+              </li>
+            );
+          })}
         </ul>
       )}
     </div>
