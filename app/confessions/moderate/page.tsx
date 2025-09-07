@@ -1,10 +1,11 @@
 import { requireAdmin } from "@/lib/auth-helpers";
+import { requirePermission } from "@/lib/permissions";
 import { prisma } from "@/lib/prisma";
 
 export const dynamic = "force-dynamic";
 
 export default async function ModerateConfessions() {
-  await requireAdmin();
+  await requirePermission("MODERATE_CONFESSIONS")
   const pending = await prisma.confession.findMany({
     where: { status: "PENDING" },
     orderBy: { createdAt: "asc" },
