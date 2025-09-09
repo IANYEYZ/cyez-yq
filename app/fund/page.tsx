@@ -35,7 +35,7 @@ export default async function FundPage() {
 
   // Build cumulative series
   const labels: string[] = [];
-  const data: BigInt[] = [];
+  const data: bigint[] = [];
   let running = BigInt(0);
   for (const t of txs) {
     running += t.amountCents;
