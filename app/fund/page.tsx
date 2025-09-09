@@ -5,13 +5,14 @@ import { getUserPermissions } from "@/lib/permissions";
 import { Permission } from "@prisma/client";
 import FundChart from "./_FundChart";
 import _AddTransactionFormClient from "./_AddTransactionFormClient";
+import { bigint } from "zod";
 
 export const dynamic = "force-dynamic";
 
-function formatMoney(cents: number) {
-  const sign = cents < 0 ? "-" : "";
-  const abs = Math.abs(cents);
-  return `${sign}$${(abs / 100).toFixed(2)}`;
+function formatMoney(cents: bigint) {
+  const sign = (cents < BigInt(0)) ? "-" : "";
+  const abs = (cents < BigInt(0)) ? -cents : cents;
+  return `${sign}$${Number((abs / BigInt(100))).toFixed(2)}`;
 }
 
 export default async function FundPage() {
@@ -30,18 +31,18 @@ export default async function FundPage() {
     })(),
   ]);
 
-  const balance = txs.reduce((sum, t) => sum + t.amountCents, 0);
+  const balance = txs.reduce((sum, t) => sum + t.amountCents, BigInt(0));
 
   // Build cumulative series
   const labels: string[] = [];
-  const data: number[] = [];
-  let running = 0;
+  const data: BigInt[] = [];
+  let running = BigInt(0);
   for (const t of txs) {
     running += t.amountCents;
     labels.push(new Intl.DateTimeFormat("en-CA",{dateStyle:"medium"}).format(t.createdAt));
-    data.push(running / 100);
+    data.push(running / BigInt(100));
   }
-
+  const dataInt = data.map(item => Number(item))
   return (
     <div className="space-y-6">
       <div className="flex items-center justify-between">
@@ -63,7 +64,7 @@ export default async function FundPage() {
           {labels.length === 0 ? (
             <p className="text-sm text-gray-600">暂无收支记录。</p>
           ) : (
-            <FundChart labels={labels} data={data} />
+            <FundChart labels={labels} data={dataInt} />
           )}
         </div>
       </div>

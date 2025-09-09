@@ -239,7 +239,7 @@ model ConfessionReport {
 
 model ClassFundTransaction {
   id          String   @id @default(cuid())
-  amountCents Int // positive = deposit, negative = expense
+  amountCents BigInt // positive = deposit, negative = expense
   memo        String?
   createdAt   DateTime @default(now())
   createdById String
