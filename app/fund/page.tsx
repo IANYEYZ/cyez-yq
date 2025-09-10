@@ -5,7 +5,7 @@ import { getUserPermissions } from "@/lib/permissions";
 import { Permission } from "@prisma/client";
 import FundChart from "./_FundChart";
 import _AddTransactionFormClient from "./_AddTransactionFormClient";
-import { bigint } from "zod";
+import DeleteTransactionButton from "./DeleteTransactionButton";
 
 export const dynamic = "force-dynamic";
 
@@ -86,6 +86,7 @@ export default async function FundPage() {
                 <div className="shrink-0 text-xs text-gray-600">
                   {new Intl.DateTimeFormat("zh-CN",{ dateStyle:"medium", timeStyle:"short" }).format(t.createdAt)}
                 </div>
+                {canManage && <DeleteTransactionButton id={t.id} />}
               </li>
             ))}
           </ul>
