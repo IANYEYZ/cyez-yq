@@ -21,6 +21,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
                 <Link href="/discussions" className="text-sm hover:underline">讨论区</Link>
                 <Link href="/confessions" className="text-sm hover:underline">表白墙</Link>
                 <Link href="/fund" className="text-sm hover:underline">班费</Link>
+                <Link href="/votes" className="text-sm hover:underline">投票</Link>
               </div>
               <NavAuthButtons />
             </div>

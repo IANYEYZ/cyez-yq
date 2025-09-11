@@ -21,6 +21,7 @@ enum Permission {
   VIEW_REPORTS
   SITE_ADMIN
   MANAGE_FINANCES
+  MANAGE_POLLS
 }
 
 model RbacRole {
@@ -91,6 +92,8 @@ model User {
   UserRbacRole         UserRbacRole[]
   UserPermission       UserPermission[]
   ClassFundTransaction ClassFundTransaction[]
+  Poll                 Poll[]
+  PollVote             PollVote[]
 }
 
 model Account {
@@ -247,4 +250,43 @@ model ClassFundTransaction {
   createdBy User @relation(fields: [createdById], references: [id], onDelete: Cascade)
 
   @@index([createdAt])
+}
+
+model Poll {
+  id          String       @id @default(cuid())
+  question    String
+  createdAt   DateTime     @default(now())
+  multi        Boolean      @default(false)   // ← NEW: allow multi-select
+  maxChoices   Int          @default(1)       // ← NEW: how many choices allowed
+  closesAt    DateTime?
+  createdById String
+  createdBy   User         @relation(fields: [createdById], references: [id], onDelete: Cascade)
+  options     PollOption[]
+  votes       PollVote[]
+}
+
+model PollOption {
+  id     String     @id @default(cuid())
+  pollId String
+  text   String
+  poll   Poll       @relation(fields: [pollId], references: [id], onDelete: Cascade)
+  votes  PollVote[]
+
+  @@index([pollId])
+}
+
+model PollVote {
+  id        String   @id @default(cuid())
+  pollId    String
+  optionId  String
+  userId    String
+  createdAt DateTime @default(now())
+
+  poll      Poll        @relation(fields: [pollId], references: [id], onDelete: Cascade)
+  option    PollOption  @relation(fields: [optionId], references: [id], onDelete: Cascade)
+  user      User        @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  // One vote per user per option; multi-select allowed across options
+  @@unique([pollId, userId, optionId])   // ← CHANGED
+  @@index([pollId, userId])              // ← helpful for lookups
 }

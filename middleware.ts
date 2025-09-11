@@ -8,6 +8,7 @@ export const config = {
     "/resources/:path*",
     "/discussions/:path*",
     "/confessions/:path*",
-    "/fund/:path*"
+    "/fund/:path*",
+    "/votes/:path*",
   ],
 };
