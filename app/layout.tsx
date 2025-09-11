@@ -1,6 +1,7 @@
 import "./globals.css";
 import Link from "next/link";
 import { NavAuthButtons } from "@/components/nav-auth-buttons";
+import "katex/dist/katex.min.css";
 
 export const metadata = {
   title: "CYEZ-YQ",
