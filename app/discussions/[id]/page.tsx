@@ -1,3 +1,4 @@
+// app/discussions/[id]/page.tsx
 import { prisma } from "@/lib/prisma";
 import { notFound } from "next/navigation";
 import NewPostForm from "./_new_post";
@@ -5,23 +6,32 @@ import { auth } from "@/auth";
 import { getUserPermissions } from "@/lib/permissions";
 import { Permission } from "@prisma/client";
 import PostActions from "./_post_action";
-import _ThreadActionsClient from "./_ThreadActionsClient";
+import _ThreadActionsClient from "./_ThreadActionsClient"; // keep your existing client file
+import Markdown from "@/components/Markdown";
 
 export const dynamic = "force-dynamic";
 
-export default async function ThreadPage(context: any) {
-  const params = (await context).params
+export default async function ThreadPage({ params }: { params: { id: string } }) {
   const session = await auth();
   const userId = (session?.user as any)?.id ?? null;
 
   const [thread, canModerate] = await Promise.all([
     prisma.discussionThread.findUnique({
       where: { id: params.id },
-      include: {
-        createdBy: { select: { name: true, email: true, id: true } },
+      select: {
+        id: true,
+        title: true,
+        createdAt: true,
+        createdBy: { select: { id: true, name: true, email: true } },
         posts: {
           orderBy: { createdAt: "asc" },
-          include: { author: { select: { name: true, email: true } } },
+          select: {
+            id: true,
+            content: true,
+            createdAt: true,
+            authorId: true,
+            author: { select: { name: true, email: true } },
+          },
         },
       },
     }),
@@ -38,13 +48,14 @@ export default async function ThreadPage(context: any) {
     <div className="space-y-6">
       <div className="rounded border p-4">
         <div className="flex items-start justify-between gap-3">
-          <div>
+          <div className="min-w-0">
             <h1 className="text-2xl font-semibold">{thread.title}</h1>
             <p className="mt-2 text-sm text-gray-600">
-              发布自 {thread.createdBy?.name ?? thread.createdBy?.email} • {thread.createdAt.toLocaleString()}
+              发布自 {thread.createdBy?.name ?? thread.createdBy?.email} •{" "}
+              {thread.createdAt.toLocaleString()}
             </p>
           </div>
-          {/* Optional: thread title edit/delete for owner/mods */}
+
           {(canModerate || thread.createdBy?.id === userId) && (
             <ThreadActions threadId={thread.id} initialTitle={thread.title} />
           )}
@@ -56,11 +67,14 @@ export default async function ThreadPage(context: any) {
           <article key={p.id} className="rounded border p-4">
             <div className="flex items-start justify-between gap-3">
               <div className="min-w-0">
-                <p className="whitespace-pre-wrap break-words">{p.content}</p>
+                {/* Markdown body (GFM + LaTeX) */}
+                <Markdown>{p.content ?? ""}</Markdown>
+
                 <p className="mt-3 text-xs text-gray-500">
-                  by {p.author?.name ?? p.author?.email} • {p.createdAt.toLocaleString()}
+                  {p.author?.name ?? p.author?.email} • {p.createdAt.toLocaleString()}
                 </p>
               </div>
+
               {(canModerate || p.authorId === userId) && (
                 <PostActions postId={p.id} initialContent={p.content} />
               )}
@@ -76,7 +90,7 @@ export default async function ThreadPage(context: any) {
   );
 }
 
-// lightweight server wrapper to keep ThreadActions client-only
+// tiny server wrapper → keeps the actions client-only
 function ThreadActions({ threadId, initialTitle }: { threadId: string; initialTitle: string }) {
-  return <_ThreadActionsClient threadId={threadId} initialTitle={initialTitle} />
+  return <_ThreadActionsClient threadId={threadId} initialTitle={initialTitle} />;
 }

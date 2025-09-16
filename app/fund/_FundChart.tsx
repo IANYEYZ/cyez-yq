@@ -14,14 +14,15 @@ export default function FundChart({ labels, data }: { labels: string[]; data: nu
       <Line
         data={{
           labels,
-          datasets: [{ label: "Balance (USD)", data, tension: 0.25 }]
+          datasets: [{ label: "Balance (CNY)", data, tension: 0.25 }]
         }}
         options={{
           responsive: true,
           maintainAspectRatio: false,
           plugins: { legend: { display: false } },
           scales: {
-            y: { ticks: { callback: (v) => `$${Number(v).toFixed(0)}` } }
+            y: { ticks: { callback: (v) => `
+              ￥${Number(v).toFixed(0)}` } }
           }
         }}
       />

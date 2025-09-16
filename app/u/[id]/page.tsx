@@ -15,19 +15,29 @@ const mathTags = [
   "math","mrow","mi","mo","mn","msup","msub","msubsup","mfrac","msqrt","mroot",
   "mtable","mtr","mtd","ms","mtext","semantics","annotation"
 ];
+
 const schema = (() => {
-  // clone default schema safely
-  const base: any = typeof structuredClone === "function"
-    ? structuredClone(defaultSchema)
-    : JSON.parse(JSON.stringify(defaultSchema));
+  const base: any =
+    typeof structuredClone === "function"
+      ? structuredClone(defaultSchema)
+      : JSON.parse(JSON.stringify(defaultSchema));
 
   base.tagNames = Array.from(new Set([...(base.tagNames ?? []), ...mathTags]));
 
-  // allow className/aria-hidden used by KaTeX spans
+  // Allow KaTeX output attributes on span/div (style is the important one)
   base.attributes = {
     ...(base.attributes ?? {}),
-    "*": Array.from(new Set([...(base.attributes?.["*"] ?? []), "className", "aria-hidden"]))
+    span: Array.from(
+      new Set([...(base.attributes?.span ?? []), "className", "style", "aria-hidden"])
+    ),
+    div: Array.from(
+      new Set([...(base.attributes?.div ?? []), "className", "style"])
+    ),
+    "*": Array.from(
+      new Set([...(base.attributes?.["*"] ?? []), "className", "aria-hidden"])
+    ),
   };
+
   return base;
 })();
 
@@ -59,7 +69,7 @@ export default async function UserPublicPage(context: any) {
       <section>
         {user.bio?.trim() ? (
           <ReactMarkdown
-            remarkPlugins={[remarkGfm, remarkMath]}
+            remarkPlugins={[remarkMath, remarkGfm]}   // ← math first
             rehypePlugins={[
               rehypeKatex,                    // render TeX → HTML/MathML
               [rehypeSanitize, schema],       // keep it safe, but allow KaTeX bits

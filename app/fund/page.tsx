@@ -12,7 +12,7 @@ export const dynamic = "force-dynamic";
 function formatMoney(cents: bigint) {
   const sign = (cents < BigInt(0)) ? "-" : "";
   const abs = (cents < BigInt(0)) ? -cents : cents;
-  return `${sign}$${Number((abs / BigInt(100))).toFixed(2)}`;
+  return `${sign}￥${Number((abs / BigInt(100))).toFixed(2)}`;
 }
 
 export default async function FundPage() {
