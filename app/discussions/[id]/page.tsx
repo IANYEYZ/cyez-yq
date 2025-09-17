@@ -11,7 +11,8 @@ import Markdown from "@/components/Markdown";
 
 export const dynamic = "force-dynamic";
 
-export default async function ThreadPage({ params }: { params: { id: string } }) {
+export default async function ThreadPage(context: any) {
+  const params = (await context).params
   const session = await auth();
   const userId = (session?.user as any)?.id ?? null;
 
