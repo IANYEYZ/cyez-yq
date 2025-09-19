@@ -8,6 +8,7 @@ import { Permission } from "@prisma/client";
 import PostActions from "./_post_action";
 import _ThreadActionsClient from "./_ThreadActionsClient"; // keep your existing client file
 import Markdown from "@/components/Markdown";
+import Avatar from "@/components/Avatar";
 
 export const dynamic = "force-dynamic";
 
@@ -50,11 +51,14 @@ export default async function ThreadPage(context: any) {
       <div className="rounded border p-4">
         <div className="flex items-start justify-between gap-3">
           <div className="min-w-0">
-            <h1 className="text-2xl font-semibold">{thread.title}</h1>
-            <p className="mt-2 text-sm text-gray-600">
-              发布自 {thread.createdBy?.name ?? thread.createdBy?.email} •{" "}
-              {thread.createdAt.toLocaleString()}
-            </p>
+            <Avatar email={thread.createdBy?.email} name={thread.createdBy?.name} size={36} />
+            <div>
+              <h1 className="text-2xl font-semibold">{thread.title}</h1>
+              <p className="mt-2 text-sm text-gray-600">
+                发布自 {thread.createdBy?.name ?? thread.createdBy?.email} •{" "}
+                {thread.createdAt.toLocaleString()}
+              </p>
+            </div>
           </div>
 
           {(canModerate || thread.createdBy?.id === userId) && (
@@ -67,15 +71,15 @@ export default async function ThreadPage(context: any) {
         {thread.posts.map((p) => (
           <article key={p.id} className="rounded border p-4">
             <div className="flex items-start justify-between gap-3">
-              <div className="min-w-0">
-                {/* Markdown body (GFM + LaTeX) */}
-                <Markdown>{p.content ?? ""}</Markdown>
-
-                <p className="mt-3 text-xs text-gray-500">
-                  {p.author?.name ?? p.author?.email} • {p.createdAt.toLocaleString()}
-                </p>
+              <div className="min-w-0 flex items-start gap-3">
+                <Avatar email={p.author?.email} name={p.author?.name} size={28} />
+                <div className="min-w-0">
+                  <p className="mt-2 text-xs text-gray-500">
+                    {p.author?.name ?? p.author?.email} • {p.createdAt.toLocaleString()}
+                  </p>
+                  <Markdown>{p.content ?? ""}</Markdown>
+                </div>
               </div>
-
               {(canModerate || p.authorId === userId) && (
                 <PostActions postId={p.id} initialContent={p.content} />
               )}

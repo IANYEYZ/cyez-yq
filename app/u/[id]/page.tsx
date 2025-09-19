@@ -7,6 +7,7 @@ import rehypeKatex from "rehype-katex";
 import rehypeSanitize, { defaultSchema } from "rehype-sanitize";
 import Link from "next/link";
 import { auth } from "@/auth";
+import Avatar from "@/components/Avatar";
 
 export const dynamic = "force-dynamic";
 
@@ -48,17 +49,23 @@ export default async function UserPublicPage(context: any) {
 
   const user = await prisma.user.findUnique({
     where: { id: params.id },
-    select: { name: true, bio: true, createdAt: true, id: true },
+    select: { name: true, bio: true, createdAt: true, id: true, email: true },
   });
   if (!user) return notFound();
 
   return (
     <div className="mx-auto max-w-2xl space-y-4">
       <header className="border-b pb-3">
-        <h1 className="text-2xl font-semibold">{user.name ?? "Student"}</h1>
-        <p className="text-sm text-gray-500">
-          Joined {new Intl.DateTimeFormat("en-US", { dateStyle: "medium" }).format(user.createdAt)}
-        </p>
+        <div className="flex items-center gap-3">
+          <Avatar email={user.email} name={user.name} size={48} />
+          <div>
+            <h1 className="text-2xl font-semibold">{user.name ?? "Student"}</h1>
+            <p className="text-sm text-gray-500">
+              Joined {new Intl.DateTimeFormat("en-US", { dateStyle: "medium" }).format(user.createdAt)}
+            </p>
+          </div>
+        </div>
+
         {meId === user.id && (
           <p className="mt-2 text-sm">
             <Link href="/settings/profile" className="underline">Edit your profile</Link>
