@@ -138,6 +138,8 @@ model Announcement {
   content   String
   authorId  String
   createdAt DateTime @default(now())
+  pinned     Boolean  @default(false)        // ← new
+  pinnedAt   DateTime?                      // ← new, when it was pinned (helps ordering)
 
   author User @relation("AnnouncementAuthor", fields: [authorId], references: [id])
 }

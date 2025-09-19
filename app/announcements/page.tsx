@@ -4,6 +4,7 @@ import { prisma } from "@/lib/prisma";
 import { auth } from "@/auth";
 import { getUserPermissions } from "@/lib/permissions";
 import { Permission } from "@prisma/client";
+import PinAnnouncementButton from "./PinAnnouncementButton";
 import DeleteAnnouncementButton from "./DeleteAnnouncementButton";
 
 export const dynamic = "force-dynamic";
@@ -14,7 +15,11 @@ export default async function AnnouncementsPage() {
 
   const [anns, canManage] = await Promise.all([
     prisma.announcement.findMany({
-      orderBy: { createdAt: "desc" },
+      orderBy: [
+        { pinned: "desc" },
+        { pinnedAt: "desc" },
+        { createdAt: "desc" },
+      ],
       select: {
         id: true,
         title: true,
@@ -22,8 +27,10 @@ export default async function AnnouncementsPage() {
         createdAt: true,
         authorId: true,
         author: { select: { name: true, email: true } },
+        pinned: true,
+        pinnedAt: true,
       },
-      take: 50,
+      take: 100,
     }),
     (async () => {
       if (!userId) return false;
@@ -36,9 +43,14 @@ export default async function AnnouncementsPage() {
     <div className="space-y-6">
       <div className="flex items-center justify-between">
         <h1 className="text-2xl font-semibold">Announcements</h1>
-        {canManage && <Link href="/announcements/new" className="rounded bg-black px-3 py-1.5 text-sm text-white">
-          New announcement
-        </Link>}
+        {canManage && (
+          <Link
+            href="/announcements/new"
+            className="rounded bg-black px-3 py-1.5 text-sm text-white"
+          >
+            New announcement
+          </Link>
+        )}
       </div>
 
       {anns.length === 0 ? (
@@ -48,17 +60,35 @@ export default async function AnnouncementsPage() {
           {anns.map((a) => {
             const canDelete = canManage || a.authorId === userId;
             return (
-              <li key={a.id} className="rounded border p-4">
+              <li
+                key={a.id}
+                className={`rounded border p-4 ${a.pinned ? "announcement-pinned" : ""}`}
+              >
                 <div className="flex items-start justify-between gap-3">
                   <div className="min-w-0">
-                    <h2 className="font-medium">{a.title}</h2>
+                    <div className="flex items-center gap-2">
+                      <h2 className="font-medium">{a.title}</h2>
+                      {a.pinned && (
+                        <span className="rounded bg-yellow-100 text-yellow-800 px-2 py-0.5 text-xs font-medium">
+                          Pinned
+                        </span>
+                      )}
+                    </div>
+
                     <p className="mt-1 whitespace-pre-wrap text-sm">{a.content}</p>
+
                     <p className="mt-2 text-xs text-gray-600">
                       by {a.author?.name ?? a.author?.email ?? "Unknown"} •{" "}
                       {a.createdAt.toLocaleString()}
                     </p>
                   </div>
-                  {canDelete && <DeleteAnnouncementButton id={a.id} />}
+
+                  <div className="flex flex-col items-end gap-2">
+                    {canManage && (
+                      <PinAnnouncementButton id={a.id} pinned={a.pinned} />
+                    )}
+                    {canDelete && <DeleteAnnouncementButton id={a.id} />}
+                  </div>
                 </div>
               </li>
             );
