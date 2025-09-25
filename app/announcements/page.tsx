@@ -6,6 +6,7 @@ import { getUserPermissions } from "@/lib/permissions";
 import { Permission } from "@prisma/client";
 import PinAnnouncementButton from "./PinAnnouncementButton";
 import DeleteAnnouncementButton from "./DeleteAnnouncementButton";
+import Markdown from "@/components/Markdown";
 
 export const dynamic = "force-dynamic";
 
@@ -42,23 +43,24 @@ export default async function AnnouncementsPage() {
   return (
     <div className="space-y-6">
       <div className="flex items-center justify-between">
-        <h1 className="text-2xl font-semibold">Announcements</h1>
+        <h1 className="text-2xl font-semibold">公告栏</h1>
         {canManage && (
           <Link
             href="/announcements/new"
             className="rounded bg-black px-3 py-1.5 text-sm text-white"
           >
-            New announcement
+            新建公告
           </Link>
         )}
       </div>
 
       {anns.length === 0 ? (
-        <p className="text-sm text-gray-600">No announcements yet.</p>
+        <p className="text-sm text-gray-600">还没有公告</p>
       ) : (
         <ul className="space-y-4">
           {anns.map((a) => {
             const canDelete = canManage || a.authorId === userId;
+            const canEdit = canManage || a.authorId === userId; // same rule
             return (
               <li
                 key={a.id}
@@ -70,23 +72,36 @@ export default async function AnnouncementsPage() {
                       <h2 className="font-medium">{a.title}</h2>
                       {a.pinned && (
                         <span className="rounded bg-yellow-100 text-yellow-800 px-2 py-0.5 text-xs font-medium">
-                          Pinned
+                          已置顶
                         </span>
                       )}
                     </div>
 
-                    <p className="mt-1 whitespace-pre-wrap text-sm">{a.content}</p>
+                    <div className="mt-2">
+                      <Markdown>{a.content ?? ""}</Markdown>
+                    </div>
 
                     <p className="mt-2 text-xs text-gray-600">
-                      by {a.author?.name ?? a.author?.email ?? "Unknown"} •{" "}
+                      发布自 {a.author?.name ?? a.author?.email ?? "位置"} •{" "}
                       {a.createdAt.toLocaleString()}
                     </p>
                   </div>
 
                   <div className="flex flex-col items-end gap-2">
-                    {canManage && (
-                      <PinAnnouncementButton id={a.id} pinned={a.pinned} />
+                    {/* Pin is manager-only */}
+                    {canManage && <PinAnnouncementButton id={a.id} pinned={a.pinned} />}
+
+                    {/* Edit visible to author or manager */}
+                    {canEdit && (
+                      <Link
+                        href={`/announcements/${a.id}/edit`}
+                        className="rounded border px-2 py-1 text-xs hover:bg-gray-50"
+                      >
+                        编辑
+                      </Link>
                     )}
+
+                    {/* Delete visible to author or manager */}
                     {canDelete && <DeleteAnnouncementButton id={a.id} />}
                   </div>
                 </div>
@@ -98,3 +113,11 @@ export default async function AnnouncementsPage() {
     </div>
   );
 }
+
+/*
+Optional CSS (globals.css):
+.announcement-pinned {
+  background: linear-gradient(90deg,#fffbeb,#ffffff);
+  border-color: rgba(245,208,87,0.3);
+}
+*/

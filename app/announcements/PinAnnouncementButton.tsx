@@ -25,9 +25,9 @@ export default function PinAnnouncementButton({ id, pinned }: { id: string; pinn
       onClick={toggle}
       disabled={busy}
       className="rounded border px-2 py-1 text-xs hover:bg-gray-50 disabled:opacity-50"
-      title={pinned ? "Unpin" : "Pin to top"}
+      title={pinned ? "取消置顶" : "置顶"}
     >
-      {pinned ? "Unpin" : "Pin"}
+      {pinned ? "取消置顶" : "置顶"}
     </button>
   );
 }

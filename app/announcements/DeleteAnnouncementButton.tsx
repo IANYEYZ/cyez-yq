@@ -17,9 +17,9 @@ export default function DeleteAnnouncementButton({ id }: { id: string }) {
     <button
       onClick={onDelete}
       className="rounded border px-2 py-1 text-xs hover:bg-gray-50"
-      title="Delete"
+      title="删除"
     >
-      Delete
+      删除
     </button>
   );
 }
