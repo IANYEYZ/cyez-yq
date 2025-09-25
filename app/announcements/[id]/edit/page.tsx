@@ -8,7 +8,8 @@ import AnnouncementForm from "../../AnnoucementForm";
 
 export const dynamic = "force-dynamic";
 
-export default async function EditAnnouncementPage({ params }: { params: { id: string } }) {
+export default async function EditAnnouncementPage(context: any) {
+  const params = (await context).params
   const session = await requireUser();
   const userId = (session.user as any).id as string;
 
